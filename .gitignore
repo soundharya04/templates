@@ -1,3 +1,8 @@
+#lock files
+*.lock
+*/package-lock.json
+*.sqlite
+
 # Logs
 logs
 *.log

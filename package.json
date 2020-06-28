@@ -1,0 +1,21 @@
+{
+  "name": "templates",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "firstrun": "npx create-react-app client",
+    "installAll": "cd server && npm install && cd ../client && npm install",
+    "start": "cd server && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soundharya04/templates.git"
+  },
+  "author": "Andruraj",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/soundharya04/templates/issues"
+  },
+  "homepage": "https://github.com/soundharya04/templates#readme"
+}
