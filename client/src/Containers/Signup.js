@@ -30,7 +30,7 @@ const SignUp = (props) => {
   });
 
   const validEmailRegex = RegExp(
-    /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+    /^(([^<>()[].,;:\s@"]+(\.[^<>()[].,;:\s@"]+)*)|(".+"))@(([^<>()[].,;:\s@"]+.)+[^<>()[].,;:\s@"]{2,})$/i
   );
   const validateForm = (errors) => {
     let valid = true;
@@ -50,7 +50,7 @@ const SignUp = (props) => {
     const cur_date = new Date();
     var user_dob = new Date(dob);
     var phoneno = RegExp(/^\d{10}$/);
-    console.log("value", gender, mstatus);
+    // console.log("value", gender, mstatus);
     if (username.length < 5) {
       setErrors((prevState) => ({
         ...prevState,
@@ -71,7 +71,7 @@ const SignUp = (props) => {
         epassword: "Password must be 8 characters long!",
       }));
     }
-    if (password != Cpassword) {
+    if (password !== Cpassword) {
       setErrors((prevState) => ({
         ...prevState,
         ecpassword: "both the passwords do not match",
@@ -90,13 +90,13 @@ const SignUp = (props) => {
         emobile: "Enter valid mobile number",
       }));
     }
-    if (gender.length == 0) {
+    if (gender.length === 0) {
       setErrors((prevState) => ({
         ...prevState,
         egender: "Please select a value",
       }));
     }
-    if (mstatus.length == 0) {
+    if (mstatus.length === 0) {
       setErrors((prevState) => ({
         ...prevState,
         emstatus: "Please select a value",
@@ -104,39 +104,39 @@ const SignUp = (props) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    validateFormData();
-    console.log(Object.values(errors).join("").length);
-    if (Object.values(errors).join("").length == 0) {
-      props.add_user({
-        username,
-        email,
-        password,
-        gender,
-        dob,
-        mobile,
-        address,
-        city,
-        state,
-        country,
-        mstatus,
-      });
-    }
-    console.log({
-      username,
-      email,
-      password,
-      Cpassword,
-      gender,
-      dob,
-      mobile,
-      address,
-      city,
-      state,
-      country,
-      mstatus,
-    });
+    await validateFormData();
+    await console.log(errors, countErrors(errors));
+    // if (Object.values(errors).join("").length == 0) {
+    //   props.add_user({
+    //     username,
+    //     email,
+    //     password,
+    //     gender,
+    //     dob,
+    //     mobile,
+    //     address,
+    //     city,
+    //     state,
+    //     country,
+    //     mstatus,
+    //   });
+    // }
+    // console.log({
+    //   username,
+    //   email,
+    //   password,
+    //   Cpassword,
+    //   gender,
+    //   dob,
+    //   mobile,
+    //   address,
+    //   city,
+    //   state,
+    //   country,
+    //   mstatus,
+    // });
   };
 
   return (
@@ -152,6 +152,7 @@ const SignUp = (props) => {
               className="form-control mb-3"
               placeholder="Username"
               required
+              value={username}
               autoComplete="off"
               onChange={(e) => {
                 setUserName(e.target.value);
@@ -177,6 +178,7 @@ const SignUp = (props) => {
                 type="text"
                 className="form-control"
                 placeholder="Email"
+                value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
                   setErrors((prevState) => ({
@@ -204,6 +206,7 @@ const SignUp = (props) => {
                 placeholder="Password"
                 required
                 autoComplete="off"
+                value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   setErrors((prevState) => ({
@@ -228,6 +231,7 @@ const SignUp = (props) => {
                 type="password"
                 className="form-control "
                 placeholder="Confirm Password"
+                value={Cpassword}
                 onChange={(e) => {
                   setCPassword(e.target.value);
                   setErrors((prevState) => ({
@@ -251,7 +255,6 @@ const SignUp = (props) => {
           <small className="form-text text-muted mb-3">
             Use 8 or more characters for a strong password!!
           </small>
-
           <div className="form-row">
             <div className="col">
               <div className="input-group-prepend">
@@ -350,6 +353,7 @@ const SignUp = (props) => {
                   type="date"
                   id="birthday"
                   name="birthday"
+                  value={dob}
                   onChange={(e) => {
                     setDOB(e.target.value);
                     setErrors((prevState) => ({
@@ -378,6 +382,7 @@ const SignUp = (props) => {
                   <select
                     className="form-control"
                     id="gender"
+                    value={mstatus}
                     onChange={(e) => {
                       setMstatus(e.target.value);
                       setErrors((prevState) => ({
@@ -410,6 +415,7 @@ const SignUp = (props) => {
               placeholder="Address"
               required
               autoComplete="off"
+              value={address}
               onChange={(e) => {
                 setAddress(e.target.value);
               }}
@@ -423,6 +429,7 @@ const SignUp = (props) => {
                 placeholder="City"
                 required
                 autoComplete="off"
+                value={city}
                 onChange={(e) => {
                   setCity(e.target.value);
                 }}
@@ -435,6 +442,7 @@ const SignUp = (props) => {
                 placeholder="State"
                 required
                 autoComplete="off"
+                value={state}
                 onChange={(e) => {
                   setState(e.target.value);
                 }}
@@ -449,6 +457,7 @@ const SignUp = (props) => {
                 placeholder="Country"
                 required
                 autoComplete="off"
+                value={country}
                 onChange={(e) => {
                   setCountry(e.target.value);
                 }}
@@ -463,6 +472,7 @@ const SignUp = (props) => {
                   type="text"
                   className="form-control"
                   placeholder="Mobile"
+                  value={mobile}
                   onChange={(e) => {
                     setMobile(e.target.value);
                     setErrors((prevState) => ({
@@ -482,10 +492,12 @@ const SignUp = (props) => {
                 {errors.emobile}
               </span>
             </div>
-          </div>
-          <button className="btn btn-success btn-block" type="submit">
-            Register
-          </button>
+          </div>{" "}
+          <input
+            className="btn btn-success btn-block"
+            type="submit"
+            value="Register"
+          />
         </form>
       </FormContainer>
     </React.Fragment>
