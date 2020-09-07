@@ -17,5 +17,11 @@
   "bugs": {
     "url": "https://github.com/soundharya04/templates/issues"
   },
-  "homepage": "https://github.com/soundharya04/templates#readme"
+  "homepage": "https://github.com/soundharya04/templates#readme",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
+  }
 }

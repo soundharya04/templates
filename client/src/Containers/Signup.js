@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { FormContainer } from "../Components/uiElements";
-import Home from "../Components/Home";
+import { add_user } from "../Store/Actions";
+import { connect } from "react-redux";
 
-const SignUp = () => {
+const SignUp = (props) => {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,15 +16,16 @@ const SignUp = () => {
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
   const [mobile, setMobile] = useState("");
+  const [isValid, setisValid] = useState("");
   const [errors, setErrors] = useState({
     eusername: "",
     eemail: "",
     epassword: "",
     ecpassword: "",
     eaddress: "",
-    ecity: "",
-    estate: "",
-    ecountry: "",
+    edob: "",
+    egender: "",
+    emstatus: "",
     emobile: "",
   });
 
@@ -45,21 +47,24 @@ const SignUp = () => {
   };
 
   const validateFormData = () => {
+    const cur_date = new Date();
+    var user_dob = new Date(dob);
+    var phoneno = RegExp(/^\d{10}$/);
+    console.log("value", gender, mstatus);
     if (username.length < 5) {
-      console.log("data invalid");
       setErrors((prevState) => ({
         ...prevState,
-        eusername: "Username must be atleast 5 characters long",
+        eusername: "Username must be more than 5 characters",
       }));
     }
 
-    const validpass = validEmailRegex.test(email);
-    if (validpass == false) {
+    if (!validEmailRegex.test(email)) {
       setErrors((prevState) => ({
         ...prevState,
-        eemail: "Invalid email address",
+        eemail: "Please enter a valid email address",
       }));
     }
+
     if (password.length < 8) {
       setErrors((prevState) => ({
         ...prevState,
@@ -72,12 +77,66 @@ const SignUp = () => {
         ecpassword: "both the passwords do not match",
       }));
     }
+    if (user_dob > cur_date) {
+      console.log("date invalid");
+      setErrors((prevState) => ({
+        ...prevState,
+        edob: "Enter valid Date of Birth",
+      }));
+    }
+    if (!phoneno.test(mobile)) {
+      setErrors((prevState) => ({
+        ...prevState,
+        emobile: "Enter valid mobile number",
+      }));
+    }
+    if (gender.length == 0) {
+      setErrors((prevState) => ({
+        ...prevState,
+        egender: "Please select a value",
+      }));
+    }
+    if (mstatus.length == 0) {
+      setErrors((prevState) => ({
+        ...prevState,
+        emstatus: "Please select a value",
+      }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     validateFormData();
-    console.log(errors);
+    console.log(Object.values(errors).join("").length);
+    if (Object.values(errors).join("").length == 0) {
+      props.add_user({
+        username,
+        email,
+        password,
+        gender,
+        dob,
+        mobile,
+        address,
+        city,
+        state,
+        country,
+        mstatus,
+      });
+    }
+    console.log({
+      username,
+      email,
+      password,
+      Cpassword,
+      gender,
+      dob,
+      mobile,
+      address,
+      city,
+      state,
+      country,
+      mstatus,
+    });
   };
 
   return (
@@ -87,10 +146,10 @@ const SignUp = () => {
       >
         <form onSubmit={handleSubmit}>
           <h5 className="h3 pb-4 text-center">Create your XYZ Account</h5>
-          <div className="form-group">
+          <div className="form-group ">
             <input
               type="text"
-              className="form-control "
+              className="form-control mb-3"
               placeholder="Username"
               required
               autoComplete="off"
@@ -104,7 +163,7 @@ const SignUp = () => {
             />
 
             <span
-              className="error mb-3"
+              className="error"
               style={{
                 color: "red",
                 visibility: errors.eusername.length > 0 ? "visible" : "hidden",
@@ -190,7 +249,7 @@ const SignUp = () => {
             </div>
           </div>
           <small className="form-text text-muted mb-3">
-            Use 8 or more characters with a mix of letters, numbers & symbols
+            Use 8 or more characters for a strong password!!
           </small>
 
           <div className="form-row">
@@ -210,6 +269,10 @@ const SignUp = () => {
                       value="male"
                       onChange={(e) => {
                         setGender(e.target.value);
+                        setErrors((prevState) => ({
+                          ...prevState,
+                          egender: "",
+                        }));
                       }}
                     />
                   </div>
@@ -230,6 +293,10 @@ const SignUp = () => {
                       value="female"
                       onChange={(e) => {
                         setGender(e.target.value);
+                        setErrors((prevState) => ({
+                          ...prevState,
+                          egender: "",
+                        }));
                       }}
                     />
                   </div>
@@ -250,6 +317,10 @@ const SignUp = () => {
                       value="other"
                       onChange={(e) => {
                         setGender(e.target.value);
+                        setErrors((prevState) => ({
+                          ...prevState,
+                          egender: "",
+                        }));
                       }}
                     />
                   </div>
@@ -260,6 +331,15 @@ const SignUp = () => {
               </div>
             </div>
           </div>
+          <span
+            className="error mb-3"
+            style={{
+              color: "red",
+              visibility: errors.egender.length > 0 ? "visible" : "hidden",
+            }}
+          >
+            {errors.egender}
+          </span>
           <div className="form-row mb-3">
             <div className="col">
               <div className="input-group mb-3">
@@ -272,9 +352,22 @@ const SignUp = () => {
                   name="birthday"
                   onChange={(e) => {
                     setDOB(e.target.value);
+                    setErrors((prevState) => ({
+                      ...prevState,
+                      edob: "",
+                    }));
                   }}
                 ></input>
               </div>
+              <span
+                className="error mb-3"
+                style={{
+                  color: "red",
+                  visibility: errors.edob.length > 0 ? "visible" : "hidden",
+                }}
+              >
+                {errors.edob}
+              </span>
             </div>
             <div className="col">
               <div className="form-group">
@@ -287,6 +380,10 @@ const SignUp = () => {
                     id="gender"
                     onChange={(e) => {
                       setMstatus(e.target.value);
+                      setErrors((prevState) => ({
+                        ...prevState,
+                        emstatus: "",
+                      }));
                     }}
                   >
                     <option></option>
@@ -295,6 +392,15 @@ const SignUp = () => {
                   </select>
                 </div>
               </div>
+              <span
+                className="error mb-3"
+                style={{
+                  color: "red",
+                  visibility: errors.emstatus.length > 0 ? "visible" : "hidden",
+                }}
+              >
+                {errors.emstatus}
+              </span>
             </div>
           </div>
           <div className="form-group">
@@ -359,9 +465,22 @@ const SignUp = () => {
                   placeholder="Mobile"
                   onChange={(e) => {
                     setMobile(e.target.value);
+                    setErrors((prevState) => ({
+                      ...prevState,
+                      emobile: "",
+                    }));
                   }}
                 />
               </div>
+              <span
+                className="error mb-3"
+                style={{
+                  color: "red",
+                  visibility: errors.emobile.length > 0 ? "visible" : "hidden",
+                }}
+              >
+                {errors.emobile}
+              </span>
             </div>
           </div>
           <button className="btn btn-success btn-block" type="submit">
@@ -373,4 +492,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default connect(null, { add_user })(SignUp);
